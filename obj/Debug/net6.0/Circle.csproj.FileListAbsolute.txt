@@ -24,3 +24,4 @@ D:\Dev\Monogame\Circle\Circle\obj\Debug\net6.0\Circle.pdb
 D:\Dev\Monogame\Circle\Circle\obj\Debug\net6.0\Circle.genruntimeconfig.cache
 D:\Dev\Monogame\Circle\Circle\obj\Debug\net6.0\ref\Circle.dll
 D:\Dev\Monogame\Circle\Circle\bin\Debug\net6.0\Content\line.xnb
+D:\Dev\Monogame\Circle\Circle\obj\Debug\net6.0\Circle.sourcelink.json
