@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -12,8 +13,9 @@ public class Game1 : Game
     private Texture2D _line;
     private int _screenHeight;
     private int _screenWidth;
-    Line line;
-
+    private static int _lineLength = 6;
+    private LinkedList<Line> _lines = new LinkedList<Line>();
+    private float _lineSpeed = 2f;
     public Game1()
     {
         _graphics = new GraphicsDeviceManager(this);
@@ -38,7 +40,12 @@ public class Game1 : Game
         _screenWidth = _graphicsDevice.PresentationParameters.BackBufferWidth;
 
         _line = Content.Load<Texture2D>("line");
-        Line line = new Line(new Vector2(_screenHeight/2, _screenWidth/2), 0, _line);
+        
+        for (int i = 0; i < _lineLength; i++)
+        {
+            Line line = new Line(new Vector2(Line.length * i, _screenHeight / 2), 0, _line, Color.Gray);
+            _lines.AddLast(line);
+        }
     }
 
     protected override void Update(GameTime gameTime)
@@ -46,7 +53,14 @@ public class Game1 : Game
         if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
             Exit();
 
-        // TODO: Add your update logic here
+        foreach (Line line in _lines)
+        {
+            line.UpdatePosition(_lineSpeed);
+        }
+        if (_lines.First.Value.Position.X + Line.length <= 0)
+        {
+            _lines.AddLast(new Line(new Vector2(_lines.Last.Value.Position.X + Line.length, _screenHeight / 2), 0, _line, Color.Red));
+        }
 
         base.Update(gameTime);
     }
@@ -56,7 +70,12 @@ public class Game1 : Game
         GraphicsDevice.Clear(Color.CornflowerBlue);
 
         _spriteBatch.Begin();
-        _spriteBatch.Draw(_line, new Vector2(400, 200), new Rectangle(0, 0, 200, 10), Color.Gray, 0, Vector2.Zero, 1f, SpriteEffects.None, 0);
+
+        foreach (Line line in _lines)
+        {
+            line.Render(_spriteBatch);
+        }
+
         _spriteBatch.End();
 
         base.Draw(gameTime);
