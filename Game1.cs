@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -10,6 +11,7 @@ public class Game1 : Game
     private GraphicsDeviceManager _graphics;
     private GraphicsDevice _graphicsDevice;
     private SpriteBatch _spriteBatch;
+    private Random _lineTypeGen = new Random();
     private Texture2D _line;
     private int _screenHeight;
     private int _screenWidth;
@@ -59,7 +61,36 @@ public class Game1 : Game
         }
         if (_lines.First.Value.Position.X + Line.length <= 0)
         {
-            _lines.AddLast(new Line(new Vector2(_lines.Last.Value.Position.X + Line.length, _screenHeight / 2), 0, _line, Color.Red));
+            int _lineType = _lineTypeGen.Next(0, 3);
+            float rotation = 0;
+            switch(_lineType)
+            {
+                case 0:
+                    rotation = 0;
+                    break;
+                case 1:
+                    rotation = -(float)_lineTypeGen.NextDouble()*MathHelper.Pi/6;
+                    break;
+                case 2:
+                    rotation = (float)_lineTypeGen.NextDouble()*MathHelper.Pi/6;
+                    break;
+            }
+
+            _lines.RemoveFirst();
+            float xPos = 0;
+            float yPos = 0;
+            if (_lines.Last.Value.Rotation >= 0)
+            {
+                xPos = _lines.Last.Value.Position.X + Line.length * (float)Math.Cos(_lines.Last.Value.Rotation);
+                yPos = _lines.Last.Value.Position.Y + Line.length * (float)Math.Sin(_lines.Last.Value.Rotation);
+            }
+            else if (_lines.Last.Value.Rotation < 0)
+            {
+                xPos = _lines.Last.Value.Position.X + Line.length * (float)Math.Cos(_lines.Last.Value.Rotation) - Line.width * (float)Math.Cos(_lines.Last.Value.Rotation);
+                yPos = _lines.Last.Value.Position.Y + Line.length * (float)Math.Sin(_lines.Last.Value.Rotation);
+            }
+
+            _lines.AddLast(new Line(new Vector2(xPos, yPos), rotation, _line, Color.Red));
         }
 
         base.Update(gameTime);
