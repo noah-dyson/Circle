@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection.Emit;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -15,9 +16,9 @@ public class Game1 : Game
     private Texture2D _line;
     private int _screenHeight;
     private int _screenWidth;
-    private static int _lineLength = 6;
+    private static int _lineLength = 3;
     private LinkedList<Line> _lines = new LinkedList<Line>();
-    private float _lineSpeed = 2f;
+    private float _lineSpeed = 3f;
     public Game1()
     {
         _graphics = new GraphicsDeviceManager(this);
@@ -79,15 +80,15 @@ public class Game1 : Game
             _lines.RemoveFirst();
             float xPos = 0;
             float yPos = 0;
-            if (_lines.Last.Value.Rotation >= 0)
+            Line lastLine = _lines.Last.Value;
+            xPos = _lines.Last.Value.Position.X + Line.length * (float)Math.Cos(_lines.Last.Value.Rotation);
+            yPos = _lines.Last.Value.Position.Y + Line.length * (float)Math.Sin(_lines.Last.Value.Rotation);
+
+// rotation < 0 && rotation - _lines.Last.Value.Rotation < 0
+            if (!(lastLine.Rotation < 0 && rotation > 0 || Math.Abs(lastLine.Rotation) - Math.Abs(rotation) > 0))
             {
-                xPos = _lines.Last.Value.Position.X + Line.length * (float)Math.Cos(_lines.Last.Value.Rotation);
-                yPos = _lines.Last.Value.Position.Y + Line.length * (float)Math.Sin(_lines.Last.Value.Rotation);
-            }
-            else if (_lines.Last.Value.Rotation < 0)
-            {
-                xPos = _lines.Last.Value.Position.X + Line.length * (float)Math.Cos(_lines.Last.Value.Rotation) - Line.width * (float)Math.Cos(_lines.Last.Value.Rotation);
-                yPos = _lines.Last.Value.Position.Y + Line.length * (float)Math.Sin(_lines.Last.Value.Rotation);
+                xPos = lastLine.Corners.bottomRight.X - Line.width * (float)Math.Cos(Math.PI/2 - Math.Abs(rotation));
+                yPos = lastLine.Corners.bottomRight.Y - Line.width * (float)Math.Sin(Math.PI/2 - Math.Abs(rotation));
             }
 
             _lines.AddLast(new Line(new Vector2(xPos, yPos), rotation, _line, Color.Red));

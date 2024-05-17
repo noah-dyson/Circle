@@ -1,11 +1,15 @@
 {
   "version": 2,
-  "dgSpecHash": "3v7dCWY6Jl7ZMIbA0qr8wfD/x1Fr6hBGQW/c8AAvNwijDlEjhFUPE0CCl0KB5ymdYaOlBnA0jheykjlOKU6aCg==",
+  "dgSpecHash": "rr4X11GC4XoSb8bjE8JBQsmTOOKAkIQalhxeraP1Ssv61jxFJzNxrjT/p2+jjzraRE31SFg8BNM/8p4NPmNFMA==",
   "success": true,
-  "projectFilePath": "C:\\Dev\\Monogame\\circle\\Circle\\Circle.csproj",
+  "projectFilePath": "D:\\Dev\\Monogame\\Circle\\Circle\\Circle.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\User\\.nuget\\packages\\monogame.content.builder.task\\3.8.1.303\\monogame.content.builder.task.3.8.1.303.nupkg.sha512",
-    "C:\\Users\\User\\.nuget\\packages\\monogame.framework.desktopgl\\3.8.1.303\\monogame.framework.desktopgl.3.8.1.303.nupkg.sha512"
+    "C:\\Users\\Auror\\.nuget\\packages\\monogame.content.builder.task\\3.8.1.303\\monogame.content.builder.task.3.8.1.303.nupkg.sha512",
+    "C:\\Users\\Auror\\.nuget\\packages\\monogame.framework.desktopgl\\3.8.1.303\\monogame.framework.desktopgl.3.8.1.303.nupkg.sha512",
+    "C:\\Users\\Auror\\.nuget\\packages\\microsoft.netcore.app.ref\\6.0.29\\microsoft.netcore.app.ref.6.0.29.nupkg.sha512",
+    "C:\\Users\\Auror\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\6.0.29\\microsoft.windowsdesktop.app.ref.6.0.29.nupkg.sha512",
+    "C:\\Users\\Auror\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\6.0.29\\microsoft.aspnetcore.app.ref.6.0.29.nupkg.sha512",
+    "C:\\Users\\Auror\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\6.0.29\\microsoft.netcore.app.host.win-x64.6.0.29.nupkg.sha512"
   ],
   "logs": []
 }
