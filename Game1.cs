@@ -16,9 +16,9 @@ public class Game1 : Game
     private Texture2D _line;
     private int _screenHeight;
     private int _screenWidth;
-    private static int _lineLength = 3;
+    private static int _lineLength = 10;
     private LinkedList<Line> _lines = new LinkedList<Line>();
-    private float _lineSpeed = 3f;
+    private float _lineSpeed = 4f;
     public Game1()
     {
         _graphics = new GraphicsDeviceManager(this);
@@ -95,21 +95,34 @@ public class Game1 : Game
 
             _lines.RemoveFirst();
 
-// rotation < 0 && rotation - _lines.Last.Value.Rotation < 0
-            if (lastLine.Rotation <= 0 && rotation < 0 && lastLine.Rotation > rotation)
+            Vector2 bottomCorner = new Vector2(0,0);
+            if (lastLine.Rotation == 0)
             {
-                xPos = lastLine.bottomRight.X - Line.width * (float)Math.Cos(Math.PI/2 - Math.Abs(rotation));
-                yPos = lastLine.bottomRight.Y - Line.width * (float)Math.Sin(Math.PI/2 - Math.Abs(rotation));
+                bottomCorner = new Vector2(lastLine.Position.X + Line.length, lastLine.Position.Y + Line.width);
             }
-            else if(lastLine.Rotation > 0 && rotation > 0 && lastLine.Rotation > rotation)
+            else if (lastLine.Rotation < 0)
             {
-                xPos = lastLine.bottomRight.X + Line.width * (float)Math.Sin(rotation);
-                yPos = lastLine.bottomRight.Y + Line.width * (float)Math.Cos(rotation);
+                bottomCorner = new Vector2(lastLine.Position.X + Line.width*(float)Math.Sin(-lastLine.Rotation) + Line.length*(float)Math.Cos(lastLine.Rotation), lastLine.Position.Y + Line.width*(float)Math.Cos(lastLine.Rotation) - Line.length*(float)Math.Sin(-lastLine.Rotation));
             }
-            else if(lastLine.Rotation > 0 && rotation < 0 && lastLine.Rotation > rotation)
+            else if (lastLine.Rotation > 0)
             {
-                xPos = lastLine.bottomRight.X - Line.width * (float)Math.Cos(Math.PI/2 - Math.Abs(rotation));
-                yPos = lastLine.bottomRight.Y - Line.width * (float)Math.Sin(Math.PI/2 - Math.Abs(rotation));
+                bottomCorner = new Vector2(lastLine.Position.X + Line.length*(float)Math.Cos(lastLine.Rotation) - Line.width*(float)Math.Sin(lastLine.Rotation), lastLine.Position.Y + Line.length*(float)Math.Sin(lastLine.Rotation) + Line.width*(float)Math.Cos(lastLine.Rotation));
+            }
+
+            if (lastLine.Rotation <= 0 && rotation < 0 && lastLine.Rotation - rotation > 0)
+            {
+                xPos = bottomCorner.X - Line.width*(float)Math.Sin(-rotation);
+                yPos = bottomCorner.Y - Line.width*(float)Math.Cos(rotation);
+            }
+            else if (lastLine.Rotation > 0 && rotation >= 0 && lastLine.Rotation - rotation > 0)
+            {
+                xPos = bottomCorner.X + Line.width*(float)Math.Sin(rotation);
+                yPos = bottomCorner.Y - Line.width*(float)Math.Cos(rotation);
+            }
+            else if (lastLine.Rotation > 0 && rotation < 0)
+            {
+                xPos = bottomCorner.X - Line.width*(float)Math.Sin(-rotation);
+                yPos = bottomCorner.Y - Line.width*(float)Math.Cos(rotation);
             }
 
             _lines.AddLast(new Line(new Vector2(xPos, yPos), rotation, _line, Color.Red));
