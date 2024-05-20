@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <SourceFile>d:/Dev/Monogame/Circle/Circle/Content/1200px-Grey_Square.svg.png</SourceFile>
-  <SourceTime>2024-05-12T22:14:00.6787533+01:00</SourceTime>
+  <SourceTime>2024-05-14T21:53:23.9556241+01:00</SourceTime>
   <DestFile>d:/Dev/Monogame/Circle/Circle/Content/bin/DesktopGL/line.xnb</DestFile>
-  <DestTime>2024-05-12T22:18:58.5817302+01:00</DestTime>
+  <DestTime>2024-05-20T19:08:14.7138878+01:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2022-07-26T12:44:56+01:00</ImporterTime>
   <Processor>TextureProcessor</Processor>

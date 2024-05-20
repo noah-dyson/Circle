@@ -51,3 +51,5 @@ C:\Dev\Monogame\circle\Circle\obj\Debug\net6.0\refint\Circle.dll
 C:\Dev\Monogame\circle\Circle\obj\Debug\net6.0\Circle.pdb
 C:\Dev\Monogame\circle\Circle\obj\Debug\net6.0\Circle.genruntimeconfig.cache
 C:\Dev\Monogame\circle\Circle\obj\Debug\net6.0\ref\Circle.dll
+D:\Dev\Monogame\Circle\Circle\bin\Debug\net6.0\Content\back-circle.xnb
+D:\Dev\Monogame\Circle\Circle\bin\Debug\net6.0\Content\front-circle.xnb

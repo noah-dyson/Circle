@@ -23,7 +23,7 @@ class Line
 
     public void Render(SpriteBatch spriteBatch)
     {
-        spriteBatch.Draw(_texture, Position, _pieceShape, _color, Rotation, Vector2.Zero, 1f, SpriteEffects.None, 0);
+        spriteBatch.Draw(_texture, Position, _pieceShape, _color, Rotation, Vector2.Zero, 1f, SpriteEffects.None, 0.1f);
     }
 
     public void UpdatePosition(float dx)

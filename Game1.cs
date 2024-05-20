@@ -14,6 +14,7 @@ public class Game1 : Game
     private SpriteBatch _spriteBatch;
     private Random _lineTypeGen = new Random();
     private Texture2D _line;
+    private Player _player;
     private int _screenHeight;
     private int _screenWidth;
     private static int _lineLength = 10;
@@ -43,12 +44,16 @@ public class Game1 : Game
         _screenWidth = _graphicsDevice.PresentationParameters.BackBufferWidth;
 
         _line = Content.Load<Texture2D>("line");
+        Texture2D _playerBack = Content.Load<Texture2D>("back-circle");
+        Texture2D _playerFront = Content.Load<Texture2D>("front-circle");
         
         for (int i = 0; i < _lineLength; i++)
         {
             Line line = new Line(new Vector2(Line.length * i, _screenHeight / 2), 0, _line, Color.Gray);
             _lines.AddLast(line);
         }
+        
+        _player = new Player(new Vector2(100, _screenHeight / 2), _playerFront, _playerBack, Color.White);
     }
 
     protected override void Update(GameTime gameTime)
@@ -135,12 +140,14 @@ public class Game1 : Game
     {
         GraphicsDevice.Clear(Color.CornflowerBlue);
 
-        _spriteBatch.Begin();
+        _spriteBatch.Begin(SpriteSortMode.FrontToBack);
 
         foreach (Line line in _lines)
         {
             line.Render(_spriteBatch);
         }
+
+        _player.Render(_spriteBatch);
 
         _spriteBatch.End();
 

@@ -1,2 +1,4 @@
 Source File,Dest File,Processor Type,Content Type,Source File Size,Dest File Size,Build Seconds
-"d:/Dev/Monogame/Circle/Circle/Content/1200px-Grey_Square.svg.png","d:/Dev/Monogame/Circle/Circle/Content/bin/DesktopGL/line.xnb","TextureProcessor","Texture2DContent",4008,5760085,0.3295467
+"d:/Dev/Monogame/Circle/Circle/Content/1200px-Grey_Square.svg.png","d:/Dev/Monogame/Circle/Circle/Content/bin/DesktopGL/line.xnb","TextureProcessor","Texture2DContent",4620,2782309,0.2656196
+"d:/Dev/Monogame/Circle/Circle/Content/back-circle.png","d:/Dev/Monogame/Circle/Circle/Content/bin/DesktopGL/back-circle.xnb","TextureProcessor","Texture2DContent",17374,706597,0.051648
+"d:/Dev/Monogame/Circle/Circle/Content/front-circle.png","d:/Dev/Monogame/Circle/Circle/Content/bin/DesktopGL/front-circle.xnb","TextureProcessor","Texture2DContent",12982,706597,0.0461986
