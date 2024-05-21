@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection.Emit;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -20,6 +20,7 @@ public class Game1 : Game
     private static int _lineLength = 10;
     private LinkedList<Line> _lines = new LinkedList<Line>();
     private float _lineSpeed = 4f;
+    bool _colliding = false;
     public Game1()
     {
         _graphics = new GraphicsDeviceManager(this);
@@ -53,7 +54,7 @@ public class Game1 : Game
             _lines.AddLast(line);
         }
         
-        _player = new Player(new Vector2(100, _screenHeight / 2), _playerFront, _playerBack, Color.White);
+        _player = new Player(new Vector2(100, _screenHeight / 2 - 100), _playerFront, _playerBack, Color.White);
     }
 
     protected override void Update(GameTime gameTime)
@@ -61,10 +62,25 @@ public class Game1 : Game
         if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
             Exit();
 
+        if (_colliding == false)
+        {
+            foreach (Line line in _lines)
+            {
+                if (Collision(line, _player))
+                {
+                    _colliding = true;
+                    _player.colliding = true;
+                    break;
+                }
+            }
+        }
+
         foreach (Line line in _lines)
         {
             line.UpdatePosition(_lineSpeed);
         }
+        _player.UpdatePosition();
+
         if (_lines.First.Value.Position.X + Line.length <= 0)
         {
             int _lineType = _lineTypeGen.Next(0, 3);
@@ -152,5 +168,59 @@ public class Game1 : Game
         _spriteBatch.End();
 
         base.Draw(gameTime);
+    }
+
+    public static bool Collision(Line line, Player player)
+    {
+        Vector2[] vertices = line.vertices;
+        Vector2[] axis = line.axis;
+        Vector2[] playerVertices = player.vertices;
+        Vector2[] playerAxis = player.axis;
+
+        for (int i = 0; i < 2; i++)
+        {
+            float[] lineProjection = new float[4];
+            float[] playerProjection = new float[4];
+
+            for (int j = 0; j < 4; j++)
+            {
+                lineProjection[j] = Vector2.Dot(vertices[j], axis[i]);
+                playerProjection[j] = Vector2.Dot(playerVertices[j], axis[i]);
+            }
+
+            float lineMin = lineProjection.Min();
+            float lineMax = lineProjection.Max();
+            float playerMin = playerProjection.Min();
+            float playerMax = playerProjection.Max();
+
+            if (lineMax < playerMin || playerMax < lineMin)
+            {
+                return false;
+            }
+        }
+
+        for (int i = 0; i < 2; i++)
+        {
+            float[] lineProjection = new float[4];
+            float[] playerProjection = new float[4];
+
+            for (int j = 0; j < 4; j++)
+            {
+                lineProjection[j] = Vector2.Dot(vertices[j], playerAxis[i]);
+                playerProjection[j] = Vector2.Dot(playerVertices[j], playerAxis[i]);
+            }
+
+            float lineMin = lineProjection.Min();
+            float lineMax = lineProjection.Max();
+            float playerMin = playerProjection.Min();
+            float playerMax = playerProjection.Max();
+
+            if (lineMax < playerMin || playerMax < lineMin)
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 }
