@@ -1,4 +1,4 @@
 Source File,Dest File,Processor Type,Content Type,Source File Size,Dest File Size,Build Seconds
-"D:/Dev/Monogame/Circle/Circle/Content/1200px-Grey_Square.svg.png","D:/Dev/Monogame/Circle/Circle/Content/bin/DesktopGL/Content/line.xnb","TextureProcessor","Texture2DContent",4620,2782309,0.259039
-"D:/Dev/Monogame/Circle/Circle/Content/back-circle.png","D:/Dev/Monogame/Circle/Circle/Content/bin/DesktopGL/Content/back-circle.xnb","TextureProcessor","Texture2DContent",17374,706597,0.423833
-"D:/Dev/Monogame/Circle/Circle/Content/front-circle.png","D:/Dev/Monogame/Circle/Circle/Content/bin/DesktopGL/Content/front-circle.xnb","TextureProcessor","Texture2DContent",12982,706597,0.0753576
+"C:/Dev/Monogame/circle/Circle/Content/1200px-Grey_Square.svg.png","C:/Dev/Monogame/circle/Circle/Content/bin/DesktopGL/Content/line.xnb","TextureProcessor","Texture2DContent",4620,2782309,0.9656763
+"C:/Dev/Monogame/circle/Circle/Content/back-circle.png","C:/Dev/Monogame/circle/Circle/Content/bin/DesktopGL/Content/back-circle.xnb","TextureProcessor","Texture2DContent",17374,706597,0.150419
+"C:/Dev/Monogame/circle/Circle/Content/front-circle.png","C:/Dev/Monogame/circle/Circle/Content/bin/DesktopGL/Content/front-circle.xnb","TextureProcessor","Texture2DContent",12982,706597,0.1122085

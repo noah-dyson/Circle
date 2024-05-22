@@ -26,6 +26,7 @@ public class Line
 
         _transform = Matrix.CreateRotationZ(Rotation);
         generateVertices();
+        generateAxis();
     }
 
     public void Render(SpriteBatch spriteBatch)

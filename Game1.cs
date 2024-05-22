@@ -4,6 +4,7 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System.Diagnostics;
 
 namespace Circle;
 
@@ -62,16 +63,32 @@ public class Game1 : Game
         if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
             Exit();
 
-        if (_colliding == false)
+        Vector2 axis = new Vector2(1, 0);
+        float[] playerProj = { Vector2.Dot(_player.vertices[0], axis), Vector2.Dot(_player.vertices[1], axis) };
+        float playerMin = playerProj.Min();
+        float playerMax = playerProj.Max();
+
+        List<Line> collisions = new List<Line>();
+
+        foreach (Line line in _lines)
         {
-            foreach (Line line in _lines)
+            float[] lineProj = { Vector2.Dot(line.vertices[0], axis), Vector2.Dot(line.vertices[1], axis), Vector2.Dot(line.vertices[2], axis), Vector2.Dot(line.vertices[3], axis)};
+            float lineMin = lineProj.Min();
+            float lineMax = lineProj.Max();
+
+            if (lineMax > playerMin && playerMax > lineMin)
             {
-                if (Collision(line, _player))
-                {
-                    _colliding = true;
-                    _player.colliding = true;
-                    break;
-                }
+                collisions.Add(line);
+            }
+        }
+
+        foreach (Line line in collisions)
+        {
+            if (Collision(line, _player))
+            {
+                _colliding = true;
+                _player.colliding = true;
+                break;
             }
         }
 
@@ -176,6 +193,11 @@ public class Game1 : Game
         Vector2[] axis = line.axis;
         Vector2[] playerVertices = player.vertices;
         Vector2[] playerAxis = player.axis;
+
+        if (line.Rotation == 0 && vertices[0].Y < playerVertices[3].Y)
+        {
+            Debug.WriteLine("Collision");
+        }
 
         for (int i = 0; i < 2; i++)
         {

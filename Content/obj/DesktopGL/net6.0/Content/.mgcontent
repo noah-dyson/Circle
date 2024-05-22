@@ -4,9 +4,9 @@
   <Platform>DesktopGL</Platform>
   <Config />
   <SourceFiles>
-    <File>D:/Dev/Monogame/Circle/Circle/Content/1200px-Grey_Square.svg.png</File>
-    <File>D:/Dev/Monogame/Circle/Circle/Content/back-circle.png</File>
-    <File>D:/Dev/Monogame/Circle/Circle/Content/front-circle.png</File>
+    <File>C:/Dev/Monogame/circle/Circle/Content/1200px-Grey_Square.svg.png</File>
+    <File>C:/Dev/Monogame/circle/Circle/Content/back-circle.png</File>
+    <File>C:/Dev/Monogame/circle/Circle/Content/front-circle.png</File>
   </SourceFiles>
   <DestFiles>
     <File>line.png</File>

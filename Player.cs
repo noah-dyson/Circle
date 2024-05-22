@@ -36,6 +36,10 @@ public class Player
         if (!colliding)
         {
             Position = new Vector2(Position.X, Position.Y + 1f);
+            for (int i = 0; i < 4; i++)
+            {
+                vertices[i] = new Vector2(vertices[i].X, vertices[i].Y + 1f);
+            }
         }
     }
 
@@ -43,8 +47,8 @@ public class Player
     {
         vertices[0] = new Vector2(Position.X, Position.Y);
         vertices[1] = new Vector2(Position.X + _textureBack.Width*2*_scale, Position.Y);
-        vertices[2] = new Vector2(Position.X + _textureBack.Width*2*_scale, Position.Y + 50);
-        vertices[3] = new Vector2(Position.X, Position.Y + 50);
+        vertices[2] = new Vector2(Position.X + _textureBack.Width*2*_scale, Position.Y + 5);
+        vertices[3] = new Vector2(Position.X, Position.Y + 5);
     }
 
     public void generateAxis()
