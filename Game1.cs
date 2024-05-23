@@ -21,7 +21,6 @@ public class Game1 : Game
     private static int _lineLength = 10;
     private LinkedList<Line> _lines = new LinkedList<Line>();
     private float _lineSpeed = 4f;
-    bool _colliding = false;
     public Game1()
     {
         _graphics = new GraphicsDeviceManager(this);
@@ -62,9 +61,13 @@ public class Game1 : Game
     {
         if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
             Exit();
+        if (Keyboard.GetState().IsKeyDown(Keys.Space))
+        {
+            _player.jump();
+        }
 
         Vector2 axis = new Vector2(1, 0);
-        float[] playerProj = { Vector2.Dot(_player.vertices[0], axis), Vector2.Dot(_player.vertices[1], axis) };
+        float[] playerProj = { Vector2.Dot(_player.verticesTop[0], axis), Vector2.Dot(_player.verticesTop[1], axis) };
         float playerMin = playerProj.Min();
         float playerMax = playerProj.Max();
 
@@ -82,11 +85,21 @@ public class Game1 : Game
             }
         }
 
+        if (_player.colliding)
+        {
+            this.LoadContent();
+        }
+
+        _player.colliding = false;
         foreach (Line line in collisions)
         {
-            if (Collision(line, _player))
+            if (Collision(line, _player, _player.verticesTop))
             {
-                _colliding = true;
+                _player.colliding = true;
+                break;
+            }
+            else if (Collision(line, _player, _player.verticesBottom))
+            {
                 _player.colliding = true;
                 break;
             }
@@ -115,12 +128,10 @@ public class Game1 : Game
                     break;
             }
 
-            float xPos = 0;
-            float yPos = 0;
             Line lastLine = _lines.Last.Value;
 
-            xPos = _lines.Last.Value.Position.X + Line.length * (float)Math.Cos(_lines.Last.Value.Rotation);
-            yPos = _lines.Last.Value.Position.Y + Line.length * (float)Math.Sin(_lines.Last.Value.Rotation);
+            float xPos = _lines.Last.Value.Position.X + Line.length * (float)Math.Cos(_lines.Last.Value.Rotation);
+            float yPos = _lines.Last.Value.Position.Y + Line.length * (float)Math.Sin(_lines.Last.Value.Rotation);
 
             if (yPos > 440)
             {
@@ -187,17 +198,12 @@ public class Game1 : Game
         base.Draw(gameTime);
     }
 
-    public static bool Collision(Line line, Player player)
+    public static bool Collision(Line line, Player player, Vector2[] partVertices)
     {
         Vector2[] vertices = line.vertices;
         Vector2[] axis = line.axis;
-        Vector2[] playerVertices = player.vertices;
+        Vector2[] playerVertices = partVertices;
         Vector2[] playerAxis = player.axis;
-
-        if (line.Rotation == 0 && vertices[0].Y < playerVertices[3].Y)
-        {
-            Debug.WriteLine("Collision");
-        }
 
         for (int i = 0; i < 2; i++)
         {

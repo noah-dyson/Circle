@@ -11,8 +11,12 @@ public class Player
     private Color _color;
     private float _scale = 0.1f;
     public bool colliding = false;
-    public Vector2[] vertices = new Vector2[4];
+    public Vector2[] verticesTop = new Vector2[4];
+    public Vector2[] verticesBottom = new Vector2[4];
     public Vector2[] axis = new Vector2[2];
+    public float velocity = 0;
+    public float gravity = 0.3f;
+    public float terminalVelocity = 2f;
 
     public Player(Vector2 position, Texture2D textureFront, Texture2D textureBack, Color color)
     {
@@ -21,7 +25,7 @@ public class Player
         _textureBack = textureBack;
         _color = color;
 
-        generateVertices();
+        generatevertices();
         generateAxis();
     }
 
@@ -35,28 +39,45 @@ public class Player
     {
         if (!colliding)
         {
-            Position = new Vector2(Position.X, Position.Y + 1f);
+            if (velocity < terminalVelocity)
+            {
+                velocity += gravity;
+            }
+            Position = new Vector2(Position.X, Position.Y + velocity);
             for (int i = 0; i < 4; i++)
             {
-                vertices[i] = new Vector2(vertices[i].X, vertices[i].Y + 1f);
+                verticesTop[i] = new Vector2(verticesTop[i].X, verticesTop[i].Y + velocity);
             }
         }
     }
 
-    public void generateVertices()
+    public void generatevertices()
     {
-        vertices[0] = new Vector2(Position.X, Position.Y);
-        vertices[1] = new Vector2(Position.X + _textureBack.Width*2*_scale, Position.Y);
-        vertices[2] = new Vector2(Position.X + _textureBack.Width*2*_scale, Position.Y + 5);
-        vertices[3] = new Vector2(Position.X, Position.Y + 5);
+        verticesTop[0] = new Vector2(Position.X, Position.Y);
+        verticesTop[1] = new Vector2(Position.X + _textureBack.Width*2*_scale, Position.Y);
+        verticesTop[2] = new Vector2(Position.X + _textureBack.Width*2*_scale, Position.Y + 5);
+        verticesTop[3] = new Vector2(Position.X, Position.Y + 5);
+
+        verticesBottom[0] = new Vector2(Position.X, Position.Y + _textureBack.Height*_scale - 5);
+        verticesBottom[1] = new Vector2(Position.X + _textureBack.Width*2*_scale, Position.Y + _textureBack.Height*_scale - 5);
+        verticesBottom[2] = new Vector2(Position.X + _textureBack.Width*2*_scale, Position.Y + _textureBack.Height*_scale);
+        verticesBottom[3] = new Vector2(Position.X, Position.Y + _textureBack.Height*_scale);
     }
 
     public void generateAxis()
     {
-        Vector2 edge = vertices[1] - vertices[0];
+        Vector2 edge = verticesTop[1] - verticesTop[0];
         axis[0] = Vector2.Normalize(new Vector2(-edge.Y, edge.X));
-        edge = vertices[2] - vertices[1];
+        edge = verticesTop[2] - verticesTop[1];
         axis[1] = Vector2.Normalize(new Vector2(-edge.Y, edge.X));
+    }
+
+    public void jump()
+    {
+        if (!colliding)
+        {
+            velocity = -2;
+        }
     }
 }
 
