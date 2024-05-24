@@ -85,11 +85,6 @@ public class Game1 : Game
             }
         }
 
-        if (_player.colliding)
-        {
-            this.LoadContent();
-        }
-
         _player.colliding = false;
         foreach (Line line in collisions)
         {

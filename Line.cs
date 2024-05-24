@@ -5,24 +5,24 @@ using Microsoft.Xna.Framework.Graphics;
 
 public class Line
 {
+    private static Color _color;
     public static int length = 100;
     public static int width = 10;
     public Vector2 Position { get; set; }
-    private Texture2D _texture;
     public float Rotation { get; set; }
     private Rectangle _pieceShape = new Rectangle(0, 0, length, width);
-    private Color _color;
 
     public Vector2[] vertices = new Vector2[4];
     public Vector2[] axis = new Vector2[2];
     private Matrix _transform;
+    private Texture2D _texture;
 
-    public Line(Vector2 position, float rotation, Texture2D texture, Color color)
+    public Line(Vector2 position, float rotation, Texture2D texture)
     {
         Position = new Vector2(position.X, position.Y);
         Rotation = rotation;
+        _color = Color.Gray;
         _texture = texture;
-        _color = color;
 
         _transform = Matrix.CreateRotationZ(Rotation);
         generateVertices();
