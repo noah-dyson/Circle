@@ -19,6 +19,7 @@ public class MainGameState
     private int _screenWidth;
     private Texture2D _line;
     private Player _player;
+    private Score _score;
     private LinkedList<Line> _lines = new LinkedList<Line>();
     private Random _lineTypeGen = new Random();
 
@@ -38,6 +39,7 @@ public class MainGameState
         _line = _contentManager.Load<Texture2D>("line");
         Texture2D _playerBack = _contentManager.Load<Texture2D>("back-circle");
         Texture2D _playerFront = _contentManager.Load<Texture2D>("front-circle");
+        SpriteFont font = _contentManager.Load<SpriteFont>("Score");
 
         for (int i = 0; i < _lineLength; i++)
         {
@@ -46,6 +48,8 @@ public class MainGameState
         }
 
         _player = new Player(new Vector2(100, _screenHeight / 2 - 50), _playerFront, _playerBack, Color.White);
+        _score = new Score(font);
+
         OnJump += _player.jump;
     }
 
@@ -91,6 +95,15 @@ public class MainGameState
             AddNextLine();
             _lines.RemoveFirst();
         }
+
+        foreach (Line line in _lines)
+        {
+            if (line.Position.X < _player.Position.X && !line.Passed)
+            {
+                line.Passed = true;
+                _score.Increment();
+            }
+        }
     }
 
     public void Draw(SpriteBatch spriteBatch)
@@ -101,6 +114,7 @@ public class MainGameState
         }
 
         _player.Render(spriteBatch);
+        _score.Render(spriteBatch, _screenWidth);
     }
 
     private List<Line> SortAndSweep()

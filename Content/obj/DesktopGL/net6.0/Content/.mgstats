@@ -1,2 +1,3 @@
 Source File,Dest File,Processor Type,Content Type,Source File Size,Dest File Size,Build Seconds
 "D:/Dev/Monogame/Circle/Circle/Content/1200px-Grey_Square.svg.png","D:/Dev/Monogame/Circle/Circle/Content/bin/DesktopGL/Content/line.xnb","TextureProcessor","Texture2DContent",4620,2782309,0.3356691
+"D:/Dev/Monogame/Circle/Circle/Content/Score.spritefont","D:/Dev/Monogame/Circle/Circle/Content/bin/DesktopGL/Content/Score.xnb","FontDescriptionProcessor","SpriteFontContent",2068,21535,0.2416678

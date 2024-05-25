@@ -15,7 +15,7 @@ public class Player
     public Vector2[] verticesBottom = new Vector2[4];
     public Vector2[] axis = new Vector2[2];
     public float velocity = 0;
-    public float gravity = 0.1f;
+    public float gravity = 0.05f;
     public float terminalVelocity = 2f;
 
     public Player(Vector2 position, Texture2D textureFront, Texture2D textureBack, Color color)
@@ -54,15 +54,15 @@ public class Player
 
     public void generatevertices()
     {
-        verticesTop[0] = new Vector2(Position.X, Position.Y);
-        verticesTop[1] = new Vector2(Position.X + _textureBack.Width*2*_scale, Position.Y);
-        verticesTop[2] = new Vector2(Position.X + _textureBack.Width*2*_scale, Position.Y + 5);
-        verticesTop[3] = new Vector2(Position.X, Position.Y + 5);
+        verticesTop[0] = new Vector2(Position.X + _textureBack.Width/2*_scale, Position.Y);
+        verticesTop[1] = new Vector2(verticesTop[0].X + _textureBack.Width*_scale, Position.Y);
+        verticesTop[2] = new Vector2(verticesTop[1].X, Position.Y + 50*_scale);
+        verticesTop[3] = new Vector2(verticesTop[0].X, Position.Y + 50*_scale);
 
-        verticesBottom[0] = new Vector2(Position.X, Position.Y + _textureBack.Height*_scale - 5);
-        verticesBottom[1] = new Vector2(Position.X + _textureBack.Width*2*_scale, Position.Y + _textureBack.Height*_scale - 5);
-        verticesBottom[2] = new Vector2(Position.X + _textureBack.Width*2*_scale, Position.Y + _textureBack.Height*_scale);
-        verticesBottom[3] = new Vector2(Position.X, Position.Y + _textureBack.Height*_scale);
+        verticesBottom[0] = new Vector2(Position.X + _textureBack.Width/2*_scale, Position.Y + _textureBack.Height*_scale - 50*_scale);
+        verticesBottom[1] = new Vector2(verticesBottom[0].X + _textureBack.Width*_scale, verticesBottom[0].Y);
+        verticesBottom[2] = new Vector2(verticesBottom[1].X, Position.Y + _textureBack.Height*_scale);
+        verticesBottom[3] = new Vector2(verticesBottom[0].X, Position.Y + _textureBack.Height*_scale);
     }
 
     public void generateAxis()

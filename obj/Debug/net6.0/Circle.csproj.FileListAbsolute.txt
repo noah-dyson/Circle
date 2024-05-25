@@ -55,3 +55,4 @@ D:\Dev\Monogame\Circle\Circle\bin\Debug\net6.0\Content\back-circle.xnb
 D:\Dev\Monogame\Circle\Circle\bin\Debug\net6.0\Content\front-circle.xnb
 C:\Dev\Monogame\circle\Circle\bin\Debug\net6.0\Content\back-circle.xnb
 C:\Dev\Monogame\circle\Circle\bin\Debug\net6.0\Content\front-circle.xnb
+D:\Dev\Monogame\Circle\Circle\bin\Debug\net6.0\Content\Score.xnb
