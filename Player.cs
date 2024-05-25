@@ -9,13 +9,13 @@ public class Player
     private Texture2D _textureFront;
     private Texture2D _textureBack;
     private Color _color;
-    private float _scale = 0.1f;
+    private float _scale = 0.15f;
     public bool colliding = false;
     public Vector2[] verticesTop = new Vector2[4];
     public Vector2[] verticesBottom = new Vector2[4];
     public Vector2[] axis = new Vector2[2];
     public float velocity = 0;
-    public float gravity = 0.3f;
+    public float gravity = 0.1f;
     public float terminalVelocity = 2f;
 
     public Player(Vector2 position, Texture2D textureFront, Texture2D textureBack, Color color)
@@ -31,7 +31,7 @@ public class Player
 
     public void Render(SpriteBatch spriteBatch)
     {
-        spriteBatch.Draw(_textureBack, Position, null, _color, 0, Vector2.Zero, 0.1f, SpriteEffects.None, 0);
+        spriteBatch.Draw(_textureBack, Position, null, _color, 0, Vector2.Zero, _scale, SpriteEffects.None, 0);
         spriteBatch.Draw(_textureFront, new Vector2(Position.X + _textureBack.Width * _scale, Position.Y), null, _color, 0, Vector2.Zero, _scale, SpriteEffects.None, 0.2f);
     }
 
@@ -47,6 +47,7 @@ public class Player
             for (int i = 0; i < 4; i++)
             {
                 verticesTop[i] = new Vector2(verticesTop[i].X, verticesTop[i].Y + velocity);
+                verticesBottom[i] = new Vector2(verticesBottom[i].X, verticesBottom[i].Y + velocity);
             }
         }
     }
@@ -76,7 +77,7 @@ public class Player
     {
         if (!colliding)
         {
-            velocity = -2;
+            velocity = -1;
         }
     }
 }

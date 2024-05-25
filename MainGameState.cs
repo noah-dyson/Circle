@@ -4,42 +4,57 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
+
+public delegate void CollisionHandler();
+public delegate void JumpHandler();
 
 public class MainGameState
 {
     private static int _lineLength = 10;
-    private static float _lineSpeed = 4f;
+    private static float _lineSpeed = 2f;
 
     private ContentManager _contentManager;
+    private int _screenHeight;
+    private int _screenWidth;
     private Texture2D _line;
     private Player _player;
     private LinkedList<Line> _lines = new LinkedList<Line>();
     private Random _lineTypeGen = new Random();
+
+    public event CollisionHandler OnCollision;
+    public event JumpHandler OnJump;
     
     
-    public void Initialize(ContentManager contentManager)
+    public void Initialize(ContentManager contentManager, int screenHeight, int screenWidth)
     {
         _contentManager = contentManager;
+        _screenHeight = screenHeight;
+        _screenWidth = screenWidth;
     }
 
     public void LoadContent()
     {
-        Texture2D _line = _contentManager.Load<Texture2D>("line");
+        _line = _contentManager.Load<Texture2D>("line");
         Texture2D _playerBack = _contentManager.Load<Texture2D>("back-circle");
         Texture2D _playerFront = _contentManager.Load<Texture2D>("front-circle");
 
         for (int i = 0; i < _lineLength; i++)
         {
-            Line line = new Line(new Microsoft.Xna.Framework.Vector2(Line.length * i, 720 / 2), 0, _line);
+            Line line = new Line(new Vector2(Line.length * i, _screenHeight / 2), 0, _line);
             _lines.AddLast(line);
         }
 
-        _player = new Player(new Microsoft.Xna.Framework.Vector2(100, 720 / 2 - 100), _playerFront, _playerBack, Microsoft.Xna.Framework.Color.White);
+        _player = new Player(new Vector2(100, _screenHeight / 2 - 50), _playerFront, _playerBack, Color.White);
+        OnJump += _player.jump;
     }
 
     public void Update(GameTime gameTime)
     {
-        // handle input with events
+        if (Keyboard.GetState().IsKeyDown(Keys.Space))
+        {
+            OnJump?.Invoke();
+        }
 
         _player.UpdatePosition();
         foreach (var line in _lines)
@@ -49,6 +64,7 @@ public class MainGameState
 
         List<Line> possibleCollisions = SortAndSweep();
 
+        _player.colliding = false;
         foreach (Line line in possibleCollisions)
         {
             if (CheckCollision(line, _player, _player.verticesTop))
@@ -61,10 +77,11 @@ public class MainGameState
                 _player.colliding = true;
                 break;
             }
-            else
-            {
-                _player.colliding = false;
-            }
+        }
+
+        if (_player.colliding)
+        {
+            OnCollision?.Invoke();
         }
 
         UpdatePositions();
@@ -74,6 +91,16 @@ public class MainGameState
             AddNextLine();
             _lines.RemoveFirst();
         }
+    }
+
+    public void Draw(SpriteBatch spriteBatch)
+    {
+        foreach (Line line in _lines)
+        {
+            line.Render(spriteBatch);
+        }
+
+        _player.Render(spriteBatch);
     }
 
     private List<Line> SortAndSweep()
@@ -193,8 +220,6 @@ public class MainGameState
             {
                 rotation = (float)_lineTypeGen.NextDouble()*MathHelper.Pi/6;
             }
-
-            _lines.RemoveFirst();
 
             Vector2 bottomCorner = new Vector2(0,0);
             if (lastLine.Rotation == 0)
