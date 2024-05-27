@@ -154,11 +154,11 @@ public class MainGameState
             float xPos = _lines.Last.Value.Position.X + Line.length * (float)Math.Cos(_lines.Last.Value.Rotation);
             float yPos = _lines.Last.Value.Position.Y + Line.length * (float)Math.Sin(_lines.Last.Value.Rotation);
 
-            if (yPos > 440)
+            if (yPos > 380)
             {
                 rotation = -(float)_lineTypeGen.NextDouble()*MathHelper.Pi/6;
             }
-            else if (yPos < 40)
+            else if (yPos < 100)
             {
                 rotation = (float)_lineTypeGen.NextDouble()*MathHelper.Pi/6;
             }
