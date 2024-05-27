@@ -9,7 +9,7 @@ public class Player
     public Vector2 Position { get; set; }
     private Texture2D _textureFront;
     private Texture2D _textureBack;
-    private Color _color;
+    public Color Color;
     public static float Scale = 0.15f;
     public bool colliding = false;
     public Vector2[] verticesTop = new Vector2[4];
@@ -28,23 +28,27 @@ public class Player
         _startingY = position.Y;
         _textureFront = textureFront;
         _textureBack = textureBack;
-        _color = color;
+        Color = color;
         _screenHeight = screenHeight;
 
-        generatevertices();
         generateAxis();
     }
 
     public void Render(SpriteBatch spriteBatch)
     {
-        spriteBatch.Draw(_textureBack, Position, null, _color, 0, Vector2.Zero, Scale, SpriteEffects.None, 0);
-        spriteBatch.Draw(_textureFront, new Vector2(Position.X + _textureBack.Width * Scale, Position.Y), null, _color, 0, Vector2.Zero, Scale, SpriteEffects.None, 0.2f);
+        spriteBatch.Draw(_textureBack, Position, null, Color, 0, Vector2.Zero, Scale, SpriteEffects.None, 0);
+        spriteBatch.Draw(_textureFront, new Vector2(Position.X + _textureBack.Width * Scale, Position.Y), null, Color, 0, Vector2.Zero, Scale, SpriteEffects.None, 0.2f);
     }
 
     public void UpdatePosition(bool running, GameTime gameTime)
     {
         if (!colliding && running)
         {
+            if (verticesTop[0] == Vector2.Zero)
+            {
+                generatevertices();
+            }
+
             if (velocity < terminalVelocity)
             {
                 velocity += gravity;
@@ -67,13 +71,13 @@ public class Player
 
     public void generatevertices()
     {
-        verticesTop[0] = new Vector2(Position.X + _textureBack.Width/2*Scale, Position.Y);
-        verticesTop[1] = new Vector2(verticesTop[0].X + _textureBack.Width*Scale, Position.Y);
+        verticesTop[0] = new Vector2(Position.X + _textureBack.Width/10*9*Scale, Position.Y);
+        verticesTop[1] = new Vector2(verticesTop[0].X + _textureBack.Width/10*2*Scale, Position.Y);
         verticesTop[2] = new Vector2(verticesTop[1].X, Position.Y + 50*Scale);
         verticesTop[3] = new Vector2(verticesTop[0].X, Position.Y + 50*Scale);
 
-        verticesBottom[0] = new Vector2(Position.X + _textureBack.Width/2*Scale, Position.Y + _textureBack.Height*Scale - 50*Scale);
-        verticesBottom[1] = new Vector2(verticesBottom[0].X + _textureBack.Width*Scale, verticesBottom[0].Y);
+        verticesBottom[0] = new Vector2(Position.X + _textureBack.Width/10*9*Scale, Position.Y + _textureBack.Height*Scale - 50*Scale);
+        verticesBottom[1] = new Vector2(verticesBottom[0].X + _textureBack.Width/10*2*Scale, verticesBottom[0].Y);
         verticesBottom[2] = new Vector2(verticesBottom[1].X, Position.Y + _textureBack.Height*Scale);
         verticesBottom[3] = new Vector2(verticesBottom[0].X, Position.Y + _textureBack.Height*Scale);
     }

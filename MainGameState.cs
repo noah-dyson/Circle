@@ -8,8 +8,14 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-public delegate void CollisionHandler();
+public delegate void RestartHandler();
 public delegate void JumpHandler();
+enum CircleState
+{
+    Pregame,
+    Ingame,
+    Postgame
+}
 
 public class MainGameState
 {
@@ -24,15 +30,15 @@ public class MainGameState
     private Score _score;
     private LinkedList<Line> _lines = new LinkedList<Line>();
     private Random _lineTypeGen = new Random();
+    private Random _colorGen = new Random();
+    public Color bgColor = Color.CornflowerBlue;
 
     private float _lineSpeed = 0;
-
-    private bool started = false;
-
-    public event CollisionHandler OnCollision;
     public event JumpHandler OnJump;
+    public event RestartHandler OnRestart;
 
     private KeyboardState _previousKeyboardState;
+    private CircleState _state = CircleState.Pregame;
     
     
     public void Initialize(ContentManager contentManager, int screenHeight, int screenWidth)
@@ -57,9 +63,9 @@ public class MainGameState
 
         _player = new Player(new Vector2(_screenWidth / 2 - _playerFront.Width*Player.Scale, _screenHeight / 2 - _playerFront.Height*Player.Scale / 2), _playerFront, _playerBack, Color.White, _screenHeight);
         _score = new Score(font);
+        _score.LoadHighScore();
 
         OnJump += _player.jump;
-        OnJump += _score.Increment;
 
         _previousKeyboardState = Keyboard.GetState();
     }
@@ -67,54 +73,42 @@ public class MainGameState
     public void Update(GameTime gameTime)
     {
         KeyboardState currentKeyboardState = Keyboard.GetState();
-        if(!started)
-        {
-            _player.UpdatePosition(false, gameTime);
-            if (currentKeyboardState.IsKeyDown(Keys.Space) && _previousKeyboardState.IsKeyUp(Keys.Space))
-            {
-                _lineSpeed = _startLineSpeed;
-                started = true;
-                OnJump?.Invoke();
-            }
-            _previousKeyboardState = currentKeyboardState;
-
-            return;
-        }
-
         if (currentKeyboardState.IsKeyDown(Keys.Space) && _previousKeyboardState.IsKeyUp(Keys.Space))
         {
-            OnJump?.Invoke();
+            switch (_state)
+            {
+                case CircleState.Pregame:
+                    _lineSpeed = _startLineSpeed;
+                    _state = CircleState.Ingame;
+                    OnJump?.Invoke();
+                    OnJump += _score.Increment;
+                    break;
+                case CircleState.Ingame:
+                    OnJump?.Invoke();
+                    if (_score.Value % 10 == 0)
+                    {
+                        _lineSpeed += 0.25f;
+                        bgColor = new Color(_colorGen.Next(0, 255), _colorGen.Next(0, 255), _colorGen.Next(0, 255));
+                    }
+                    break;
+                case CircleState.Postgame:
+                    OnRestart?.Invoke();
+                    break;
+            }
         }
         _previousKeyboardState = currentKeyboardState;
 
-        List<Line> possibleCollisions = Collisions.SortAndSweep(_player, _lines);
-
-        _player.colliding = false;
-        foreach (Line line in possibleCollisions)
+        switch (_state)
         {
-            if (Collisions.SeparatingAxisCollision(line, _player, _player.verticesTop))
-            {
-                _player.colliding = true;
+            case CircleState.Pregame:
+                StartGameUpdate(gameTime);
                 break;
-            }
-            else if (Collisions.SeparatingAxisCollision(line, _player, _player.verticesBottom))
-            {
-                _player.colliding = true;
+            case CircleState.Ingame:
+                InGameUpdate(gameTime);
                 break;
-            }
-        }
-
-        if (_player.colliding)
-        {
-            OnCollision?.Invoke();
-        }
-
-        UpdatePositions(gameTime);
-
-        if (_lines.First.Value.Position.X + Line.length <= 0)
-        {
-            AddNextLine();
-            _lines.RemoveFirst();
+            case CircleState.Postgame:
+                PostGameUpdate(gameTime);
+                break;
         }
     }
 
@@ -136,11 +130,6 @@ public class MainGameState
             line.UpdatePosition(_lineSpeed);
         }
         _player.UpdatePosition(true, gameTime);
-    }
-
-    private void FailedLevel()
-    {
-        
     }
 
     private void AddNextLine()
@@ -205,6 +194,54 @@ public class MainGameState
             }
 
             _lines.AddLast(new Line(new Vector2(xPos, yPos), rotation, _line));
+    }
+
+    private void StartGameUpdate(GameTime gameTime)
+    {
+        _player.UpdatePosition(false, gameTime);
+    }
+
+    private void InGameUpdate(GameTime gameTime)
+    {
+        List<Line> possibleCollisions = Collisions.SortAndSweep(_player, _lines);
+
+        _player.colliding = false;
+        foreach (Line line in possibleCollisions)
+        {
+            if (Collisions.SeparatingAxisCollision(line, _player, _player.verticesTop))
+            {
+                _player.colliding = true;
+                break;
+            }
+            else if (Collisions.SeparatingAxisCollision(line, _player, _player.verticesBottom))
+            {
+                _player.colliding = true;
+                break;
+            }
+        }
+
+        if (_player.colliding)
+        {
+            _state = CircleState.Postgame;
+            if (_score.Value > _score.HighScore)
+            {
+                _score.HighScore = _score.Value;
+                _score.SaveHighScore();
+            }
+        }
+
+        UpdatePositions(gameTime);
+
+        if (_lines.First.Value.Position.X + Line.length <= 0)
+        {
+            AddNextLine();
+            _lines.RemoveFirst();
+        }
+    }
+
+    private void PostGameUpdate(GameTime gameTime)
+    {
+        _player.Color = Color.Orange;
     }
 
 }

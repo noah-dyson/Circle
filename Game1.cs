@@ -42,7 +42,7 @@ public class Game1 : Game
 
         _mainGameState.Initialize(Content, _screenHeight, _screenWidth);
         _mainGameState.LoadContent();
-        _mainGameState.OnCollision += Restart;
+        _mainGameState.OnRestart += Restart;
     }
 
     protected override void Update(GameTime gameTime)
@@ -54,7 +54,8 @@ public class Game1 : Game
 
     protected override void Draw(GameTime gameTime)
     {
-        GraphicsDevice.Clear(Color.CornflowerBlue);
+        Color bgColor = _mainGameState.bgColor;
+        GraphicsDevice.Clear(bgColor);
 
         _spriteBatch.Begin(SpriteSortMode.FrontToBack);
 
@@ -70,6 +71,6 @@ public class Game1 : Game
         _mainGameState = new MainGameState();
         _mainGameState.Initialize(Content, _screenHeight, _screenWidth);
         _mainGameState.LoadContent();
-        _mainGameState.OnCollision += Restart;
+        _mainGameState.OnRestart += Restart;
     }
 }
