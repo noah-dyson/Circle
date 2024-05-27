@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using Circle;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -12,7 +14,7 @@ public delegate void JumpHandler();
 public class MainGameState
 {
     private static int _lineLength = 10;
-    private static float _lineSpeed = 2f;
+    private static float _startLineSpeed = 3f;
 
     private ContentManager _contentManager;
     private int _screenHeight;
@@ -23,8 +25,14 @@ public class MainGameState
     private LinkedList<Line> _lines = new LinkedList<Line>();
     private Random _lineTypeGen = new Random();
 
+    private float _lineSpeed = 0;
+
+    private bool started = false;
+
     public event CollisionHandler OnCollision;
     public event JumpHandler OnJump;
+
+    private KeyboardState _previousKeyboardState;
     
     
     public void Initialize(ContentManager contentManager, int screenHeight, int screenWidth)
@@ -47,36 +55,49 @@ public class MainGameState
             _lines.AddLast(line);
         }
 
-        _player = new Player(new Vector2(100, _screenHeight / 2 - 50), _playerFront, _playerBack, Color.White);
+        _player = new Player(new Vector2(_screenWidth / 2 - _playerFront.Width*Player.Scale, _screenHeight / 2 - _playerFront.Height*Player.Scale / 2), _playerFront, _playerBack, Color.White, _screenHeight);
         _score = new Score(font);
 
         OnJump += _player.jump;
+        OnJump += _score.Increment;
+
+        _previousKeyboardState = Keyboard.GetState();
     }
 
     public void Update(GameTime gameTime)
     {
-        if (Keyboard.GetState().IsKeyDown(Keys.Space))
+        KeyboardState currentKeyboardState = Keyboard.GetState();
+        if(!started)
+        {
+            _player.UpdatePosition(false, gameTime);
+            if (currentKeyboardState.IsKeyDown(Keys.Space) && _previousKeyboardState.IsKeyUp(Keys.Space))
+            {
+                _lineSpeed = _startLineSpeed;
+                started = true;
+                OnJump?.Invoke();
+            }
+            _previousKeyboardState = currentKeyboardState;
+
+            return;
+        }
+
+        if (currentKeyboardState.IsKeyDown(Keys.Space) && _previousKeyboardState.IsKeyUp(Keys.Space))
         {
             OnJump?.Invoke();
         }
+        _previousKeyboardState = currentKeyboardState;
 
-        _player.UpdatePosition();
-        foreach (var line in _lines)
-        {
-            line.UpdatePosition(_lineSpeed);
-        }
-
-        List<Line> possibleCollisions = SortAndSweep();
+        List<Line> possibleCollisions = Collisions.SortAndSweep(_player, _lines);
 
         _player.colliding = false;
         foreach (Line line in possibleCollisions)
         {
-            if (CheckCollision(line, _player, _player.verticesTop))
+            if (Collisions.SeparatingAxisCollision(line, _player, _player.verticesTop))
             {
                 _player.colliding = true;
                 break;
             }
-            else if (CheckCollision(line, _player, _player.verticesBottom))
+            else if (Collisions.SeparatingAxisCollision(line, _player, _player.verticesBottom))
             {
                 _player.colliding = true;
                 break;
@@ -88,21 +109,12 @@ public class MainGameState
             OnCollision?.Invoke();
         }
 
-        UpdatePositions();
+        UpdatePositions(gameTime);
 
         if (_lines.First.Value.Position.X + Line.length <= 0)
         {
             AddNextLine();
             _lines.RemoveFirst();
-        }
-
-        foreach (Line line in _lines)
-        {
-            if (line.Position.X < _player.Position.X && !line.Passed)
-            {
-                line.Passed = true;
-                _score.Increment();
-            }
         }
     }
 
@@ -117,91 +129,18 @@ public class MainGameState
         _score.Render(spriteBatch, _screenWidth);
     }
 
-    private List<Line> SortAndSweep()
-    {
-        Vector2 axis = new Vector2(1, 0);
-        float[] playerProj = { Vector2.Dot(_player.verticesTop[0], axis), Vector2.Dot(_player.verticesTop[1], axis) };
-        float playerMin = playerProj.Min();
-        float playerMax = playerProj.Max();
-
-        List<Line> possibleCollisions = new List<Line>();
-
-        foreach (Line line in _lines)
-        {
-            float[] lineProj = { Vector2.Dot(line.vertices[0], axis), Vector2.Dot(line.vertices[1], axis), Vector2.Dot(line.vertices[2], axis), Vector2.Dot(line.vertices[3], axis)};
-            float lineMin = lineProj.Min();
-            float lineMax = lineProj.Max();
-
-            if (lineMax > playerMin && playerMax > lineMin)
-            {
-                possibleCollisions.Add(line);
-            }
-        }
-
-        return possibleCollisions;
-    }
-
-    private bool CheckCollision(Line line, Player player, Vector2[] partVertices)
-    {
-        Vector2[] vertices = line.vertices;
-        Vector2[] axis = line.axis;
-        Vector2[] playerVertices = partVertices;
-        Vector2[] playerAxis = player.axis;
-
-        for (int i = 0; i < 2; i++)
-        {
-            float[] lineProjection = new float[4];
-            float[] playerProjection = new float[4];
-
-            for (int j = 0; j < 4; j++)
-            {
-                lineProjection[j] = Vector2.Dot(vertices[j], axis[i]);
-                playerProjection[j] = Vector2.Dot(playerVertices[j], axis[i]);
-            }
-
-            float lineMin = lineProjection.Min();
-            float lineMax = lineProjection.Max();
-            float playerMin = playerProjection.Min();
-            float playerMax = playerProjection.Max();
-
-            if (lineMax < playerMin || playerMax < lineMin)
-            {
-                return false;
-            }
-        }
-
-        for (int i = 0; i < 2; i++)
-        {
-            float[] lineProjection = new float[4];
-            float[] playerProjection = new float[4];
-
-            for (int j = 0; j < 4; j++)
-            {
-                lineProjection[j] = Vector2.Dot(vertices[j], playerAxis[i]);
-                playerProjection[j] = Vector2.Dot(playerVertices[j], playerAxis[i]);
-            }
-
-            float lineMin = lineProjection.Min();
-            float lineMax = lineProjection.Max();
-            float playerMin = playerProjection.Min();
-            float playerMax = playerProjection.Max();
-
-            if (lineMax < playerMin || playerMax < lineMin)
-            {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    private void UpdatePositions()
+    private void UpdatePositions(GameTime gameTime)
     {
         foreach (Line line in _lines)
         {
             line.UpdatePosition(_lineSpeed);
         }
-        _player.UpdatePosition();
+        _player.UpdatePosition(true, gameTime);
+    }
+
+    private void FailedLevel()
+    {
+        
     }
 
     private void AddNextLine()

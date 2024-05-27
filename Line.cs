@@ -7,7 +7,7 @@ public class Line
 {
     private static Color _color;
     public static int length = 100;
-    public static int width = 15;
+    public static int width = 10;
     public Vector2 Position { get; set; }
     public float Rotation { get; set; }
     private Rectangle _pieceShape = new Rectangle(0, 0, length, width);
@@ -16,7 +16,6 @@ public class Line
     public Vector2[] axis = new Vector2[2];
     private Matrix _transform;
     private Texture2D _texture;
-    public bool Passed = false;
 
     public Line(Vector2 position, float rotation, Texture2D texture)
     {

@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.CompilerServices;
+using Circle;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -9,21 +10,26 @@ public class Player
     private Texture2D _textureFront;
     private Texture2D _textureBack;
     private Color _color;
-    private float _scale = 0.15f;
+    public static float Scale = 0.15f;
     public bool colliding = false;
     public Vector2[] verticesTop = new Vector2[4];
     public Vector2[] verticesBottom = new Vector2[4];
     public Vector2[] axis = new Vector2[2];
     public float velocity = 0;
-    public float gravity = 0.05f;
-    public float terminalVelocity = 2f;
+    public float gravity = 0.1f;
+    public float terminalVelocity = 4f;
+    private float _startingY;
+    private int _screenHeight;
+    private float _elapsedTime = 0f;
 
-    public Player(Vector2 position, Texture2D textureFront, Texture2D textureBack, Color color)
+    public Player(Vector2 position, Texture2D textureFront, Texture2D textureBack, Color color, int screenHeight)
     {
         Position = new Vector2(position.X, position.Y);
+        _startingY = position.Y;
         _textureFront = textureFront;
         _textureBack = textureBack;
         _color = color;
+        _screenHeight = screenHeight;
 
         generatevertices();
         generateAxis();
@@ -31,13 +37,13 @@ public class Player
 
     public void Render(SpriteBatch spriteBatch)
     {
-        spriteBatch.Draw(_textureBack, Position, null, _color, 0, Vector2.Zero, _scale, SpriteEffects.None, 0);
-        spriteBatch.Draw(_textureFront, new Vector2(Position.X + _textureBack.Width * _scale, Position.Y), null, _color, 0, Vector2.Zero, _scale, SpriteEffects.None, 0.2f);
+        spriteBatch.Draw(_textureBack, Position, null, _color, 0, Vector2.Zero, Scale, SpriteEffects.None, 0);
+        spriteBatch.Draw(_textureFront, new Vector2(Position.X + _textureBack.Width * Scale, Position.Y), null, _color, 0, Vector2.Zero, Scale, SpriteEffects.None, 0.2f);
     }
 
-    public void UpdatePosition()
+    public void UpdatePosition(bool running, GameTime gameTime)
     {
-        if (!colliding)
+        if (!colliding && running)
         {
             if (velocity < terminalVelocity)
             {
@@ -50,19 +56,26 @@ public class Player
                 verticesBottom[i] = new Vector2(verticesBottom[i].X, verticesBottom[i].Y + velocity);
             }
         }
+        else if (!running)
+        {
+            _elapsedTime += (float)gameTime.ElapsedGameTime.TotalSeconds;
+            float timePeriod = 1f;
+            float amplitude = 10f;
+            Position = new Vector2(Position.X, _startingY + (float)Math.Sin(_elapsedTime/timePeriod * 2 * Math.PI) * amplitude);
+        }
     }
 
     public void generatevertices()
     {
-        verticesTop[0] = new Vector2(Position.X + _textureBack.Width/2*_scale, Position.Y);
-        verticesTop[1] = new Vector2(verticesTop[0].X + _textureBack.Width*_scale, Position.Y);
-        verticesTop[2] = new Vector2(verticesTop[1].X, Position.Y + 50*_scale);
-        verticesTop[3] = new Vector2(verticesTop[0].X, Position.Y + 50*_scale);
+        verticesTop[0] = new Vector2(Position.X + _textureBack.Width/2*Scale, Position.Y);
+        verticesTop[1] = new Vector2(verticesTop[0].X + _textureBack.Width*Scale, Position.Y);
+        verticesTop[2] = new Vector2(verticesTop[1].X, Position.Y + 50*Scale);
+        verticesTop[3] = new Vector2(verticesTop[0].X, Position.Y + 50*Scale);
 
-        verticesBottom[0] = new Vector2(Position.X + _textureBack.Width/2*_scale, Position.Y + _textureBack.Height*_scale - 50*_scale);
-        verticesBottom[1] = new Vector2(verticesBottom[0].X + _textureBack.Width*_scale, verticesBottom[0].Y);
-        verticesBottom[2] = new Vector2(verticesBottom[1].X, Position.Y + _textureBack.Height*_scale);
-        verticesBottom[3] = new Vector2(verticesBottom[0].X, Position.Y + _textureBack.Height*_scale);
+        verticesBottom[0] = new Vector2(Position.X + _textureBack.Width/2*Scale, Position.Y + _textureBack.Height*Scale - 50*Scale);
+        verticesBottom[1] = new Vector2(verticesBottom[0].X + _textureBack.Width*Scale, verticesBottom[0].Y);
+        verticesBottom[2] = new Vector2(verticesBottom[1].X, Position.Y + _textureBack.Height*Scale);
+        verticesBottom[3] = new Vector2(verticesBottom[0].X, Position.Y + _textureBack.Height*Scale);
     }
 
     public void generateAxis()
@@ -77,7 +90,7 @@ public class Player
     {
         if (!colliding)
         {
-            velocity = -1;
+            velocity = -2;
         }
     }
 }
