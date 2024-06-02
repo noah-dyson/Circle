@@ -5,15 +5,16 @@ using Microsoft.Xna.Framework.Graphics;
 
 public class Line
 {
-    private static Color _color;
     public static int length = 100;
     public static int width = 10;
+    private static Color _color = Color.White;
+
     public Vector2 Position { get; set; }
     public float Rotation { get; set; }
     private Rectangle _pieceShape = new Rectangle(0, 0, length, width);
 
-    public Vector2[] vertices = new Vector2[4];
-    public Vector2[] axis = new Vector2[2];
+    public Vector2[] Vertices = new Vector2[4];
+    public Vector2[] Axis = new Vector2[2];
     private Matrix _transform;
     private Texture2D _texture;
 
@@ -21,9 +22,9 @@ public class Line
     {
         Position = new Vector2(position.X, position.Y);
         Rotation = rotation;
-        _color = Color.Gray;
         _texture = texture;
 
+        // create a rotation matrix to rotate the line Vertices
         _transform = Matrix.CreateRotationZ(Rotation);
         generateVertices();
         generateAxis();
@@ -36,34 +37,37 @@ public class Line
 
     public void UpdatePosition(float dx)
     {
+        // move the line to the left and update the Vertices positions
         Position = new Vector2(Position.X - dx, Position.Y);
         for (int i = 0; i < 4; i++)
         {
-            vertices[i] = new Vector2(vertices[i].X - dx, vertices[i].Y);
+            Vertices[i] = new Vector2(Vertices[i].X - dx, Vertices[i].Y);
         }
     }
 
     public void generateVertices()
     {
-        vertices[0] = new Vector2(Position.X, Position.Y);
-        vertices[1] = new Vector2(Position.X + length, Position.Y);
-        vertices[2] = new Vector2(Position.X + length, Position.Y + width);
-        vertices[3] = new Vector2(Position.X, Position.Y + width);
+        Vertices[0] = new Vector2(Position.X, Position.Y);
+        Vertices[1] = new Vector2(Position.X + length, Position.Y);
+        Vertices[2] = new Vector2(Position.X + length, Position.Y + width);
+        Vertices[3] = new Vector2(Position.X, Position.Y + width);
 
+        // rotate the Vertices
         for (int i = 0; i < 4; i++)
         {
-            Vector2 temp = vertices[i] - vertices[0];
+            Vector2 temp = Vertices[i] - Vertices[0];
             temp = Vector2.Transform(temp, _transform);
-            vertices[i] = temp + vertices[0];
+            Vertices[i] = temp + Vertices[0];
         }
     }
 
     public void generateAxis()
     {
-        Vector2 edge = vertices[1] - vertices[0];
-        axis[0] = Vector2.Normalize(new Vector2(-edge.Y, edge.X));
-        edge = vertices[2] - vertices[1];
-        axis[1] = Vector2.Normalize(new Vector2(-edge.Y, edge.X));
+        // create the Axis of the line used for collision detection
+        Vector2 edge = Vertices[1] - Vertices[0];
+        Axis[0] = Vector2.Normalize(new Vector2(-edge.Y, edge.X));
+        edge = Vertices[2] - Vertices[1];
+        Axis[1] = Vector2.Normalize(new Vector2(-edge.Y, edge.X));
     }
 
 

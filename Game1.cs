@@ -51,7 +51,7 @@ public class Game1 : Game
     protected override void Draw(GameTime gameTime)
     {
         // changing the background color randomly
-        Color bgColor = _mainGameState.bgColor;
+        Color bgColor = _mainGameState.BackgroundColor;
         GraphicsDevice.Clear(bgColor);
 
         _spriteBatch.Begin(SpriteSortMode.FrontToBack);

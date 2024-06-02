@@ -41,6 +41,7 @@ public class Score
 
         using (StreamReader sr = new StreamReader(new FileStream(_fileName, FileMode.Open)))
         {
+            // read the high score from the file
             HighScore = int.Parse(sr.ReadLine());
         }
     }
@@ -49,6 +50,7 @@ public class Score
     {
         using (StreamWriter sw = new StreamWriter(new FileStream(_fileName, FileMode.Create)))
         {
+            // write the high score to the file
             sw.Write(HighScore.ToString());
         }
     }

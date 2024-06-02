@@ -28,20 +28,22 @@ namespace Circle
         private ContentManager _contentManager;
         private int _screenHeight;
         private int _screenWidth;
+
         private Texture2D _line;
         private Player _player;
         private Score _score;
         private LinkedList<Line> _lines = new LinkedList<Line>();
+
         private Random _lineTypeGen = new Random();
         private Random _colorGen = new Random();
-        public Color bgColor = Color.CornflowerBlue;
+        public Color BackgroundColor = Color.CornflowerBlue;
 
-        private float _lineSpeed = 0;
         public event JumpHandler OnJump;
         public event RestartHandler OnRestart;
 
         private KeyboardState _previousKeyboardState;
         private CircleState _state = CircleState.Pregame;
+        private float _lineSpeed = 0;
 
 
         public void Initialize(ContentManager contentManager, int screenHeight, int screenWidth)
@@ -67,7 +69,7 @@ namespace Circle
 
 
             // creating the player and the scores
-            _player = new Player(new Vector2(_screenWidth / 2 - _playerFront.Width * Player.Scale, _screenHeight / 2 - _playerFront.Height * Player.Scale / 2), _playerFront, _playerBack, Color.White, _screenHeight);
+            _player = new Player(new Vector2(_screenWidth / 2 - _playerFront.Width * Player.Scale, _screenHeight / 2 - _playerFront.Height * Player.Scale / 2), _playerFront, _playerBack, Color.White);
             _score = new Score(font);
             _score.LoadHighScore();
 
@@ -101,7 +103,7 @@ namespace Circle
                         if (_score.Value % 10 == 0)
                         {
                             _lineSpeed += 0.25f;
-                            bgColor = new Color(_colorGen.Next(0, 255), _colorGen.Next(0, 255), _colorGen.Next(0, 255));
+                            BackgroundColor = new Color(_colorGen.Next(0, 255), _colorGen.Next(0, 255), _colorGen.Next(0, 255));
                         }
                         break;
 
@@ -162,23 +164,23 @@ namespace Circle
             List<Line> possibleCollisions = Collisions.SortAndSweep(_player, _lines);
 
             // checks if either of the players collision boxes are colliding with any of the possible collisions
-            _player.colliding = false;
+            _player.Colliding = false;
             foreach (Line line in possibleCollisions)
             {
-                if (Collisions.SeparatingAxisCollision(line, _player, _player.verticesTop))
+                if (Collisions.SeparatingAxisCollision(line, _player, _player.VerticesTop))
                 {
-                    _player.colliding = true;
+                    _player.Colliding = true;
                     break;
                 }
-                else if (Collisions.SeparatingAxisCollision(line, _player, _player.verticesBottom))
+                else if (Collisions.SeparatingAxisCollision(line, _player, _player.VerticesBottom))
                 {
-                    _player.colliding = true;
+                    _player.Colliding = true;
                     break;
                 }
             }
 
             // if the player is colliding with a line the game is over
-            if (_player.colliding)
+            if (_player.Colliding)
             {
                 _state = CircleState.Postgame;
                 if (_score.Value > _score.HighScore)

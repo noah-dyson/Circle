@@ -9,10 +9,10 @@ namespace Circle
         // performs a separating axis test between a line and one of the players collision boxes
         public static bool SeparatingAxisCollision(Line line, Player player, Vector2[] partVertices)
         {
-            Vector2[] vertices = line.vertices;
-            Vector2[] axis = line.axis;
+            Vector2[] vertices = line.Vertices;
+            Vector2[] axis = line.Axis;
             Vector2[] playerVertices = partVertices;
-            Vector2[] playerAxis = player.axis;
+            Vector2[] playerAxis = player.Axis;
 
             // for each axis of the line, project the vertices of the line and the player onto the axis
             // and check if the projections overlap
@@ -70,7 +70,7 @@ namespace Circle
             Vector2 axis = new Vector2(1, 0);
             
             // project the player vertices onto the x axis
-            float[] playerProj = { Vector2.Dot(player.verticesTop[0], axis), Vector2.Dot(player.verticesTop[1], axis) };
+            float[] playerProj = { Vector2.Dot(player.VerticesTop[0], axis), Vector2.Dot(player.VerticesTop[1], axis) };
             float playerMin = playerProj.Min();
             float playerMax = playerProj.Max();
 
@@ -80,7 +80,7 @@ namespace Circle
             // and check if the projections overlap with the player's
             foreach (Line line in lines)
             {
-                float[] lineProj = { Vector2.Dot(line.vertices[0], axis), Vector2.Dot(line.vertices[1], axis), Vector2.Dot(line.vertices[2], axis), Vector2.Dot(line.vertices[3], axis) };
+                float[] lineProj = { Vector2.Dot(line.Vertices[0], axis), Vector2.Dot(line.Vertices[1], axis), Vector2.Dot(line.Vertices[2], axis), Vector2.Dot(line.Vertices[3], axis) };
                 float lineMin = lineProj.Min();
                 float lineMax = lineProj.Max();
 
