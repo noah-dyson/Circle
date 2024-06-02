@@ -6,6 +6,7 @@ namespace Circle
 {
     public static class Collisions
     {
+        // performs a separating axis test between a line and one of the players collision boxes
         public static bool SeparatingAxisCollision(Line line, Player player, Vector2[] partVertices)
         {
             Vector2[] vertices = line.vertices;
@@ -13,6 +14,8 @@ namespace Circle
             Vector2[] playerVertices = partVertices;
             Vector2[] playerAxis = player.axis;
 
+            // for each axis of the line, project the vertices of the line and the player onto the axis
+            // and check if the projections overlap
             for (int i = 0; i < 2; i++)
             {
                 float[] lineProjection = new float[4];
@@ -35,6 +38,7 @@ namespace Circle
                 }
             }
 
+            // the same check but for the player's axes
             for (int i = 0; i < 2; i++)
             {
                 float[] lineProjection = new float[4];
@@ -60,15 +64,20 @@ namespace Circle
             return true;
         }
 
+        // checks if the player is near enough to a line to be considered a possible collision
         public static List<Line> SortAndSweep(Player player, LinkedList<Line> lines)
         {
             Vector2 axis = new Vector2(1, 0);
+            
+            // project the player vertices onto the x axis
             float[] playerProj = { Vector2.Dot(player.verticesTop[0], axis), Vector2.Dot(player.verticesTop[1], axis) };
             float playerMin = playerProj.Min();
             float playerMax = playerProj.Max();
 
             List<Line> possibleCollisions = new List<Line>();
 
+            // for each line, project the line vertices onto the x axis
+            // and check if the projections overlap with the player's
             foreach (Line line in lines)
             {
                 float[] lineProj = { Vector2.Dot(line.vertices[0], axis), Vector2.Dot(line.vertices[1], axis), Vector2.Dot(line.vertices[2], axis), Vector2.Dot(line.vertices[3], axis) };

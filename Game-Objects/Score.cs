@@ -1,8 +1,9 @@
 using System.IO;
-using System.Xml.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
+namespace Circle
+{
 public class Score
 {
     public int Value;
@@ -51,4 +52,5 @@ public class Score
             sw.Write(HighScore.ToString());
         }
     }
+}
 }

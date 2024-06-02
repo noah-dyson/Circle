@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using System.Diagnostics;
 
 namespace Circle;
 
@@ -40,6 +35,7 @@ public class Game1 : Game
         _screenHeight = _graphicsDevice.PresentationParameters.BackBufferHeight;
         _screenWidth = _graphicsDevice.PresentationParameters.BackBufferWidth;
 
+        // start the game with an instantce of MainGameState
         _mainGameState.Initialize(Content, _screenHeight, _screenWidth);
         _mainGameState.LoadContent();
         _mainGameState.OnRestart += Restart;
@@ -54,6 +50,7 @@ public class Game1 : Game
 
     protected override void Draw(GameTime gameTime)
     {
+        // changing the background color randomly
         Color bgColor = _mainGameState.bgColor;
         GraphicsDevice.Clear(bgColor);
 
