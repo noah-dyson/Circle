@@ -7,7 +7,7 @@ public class Line
 {
     public static int length = 100;
     public static int width = 10;
-    private static Color _color = Color.White;
+    private static Color _color = Color.Gray;
 
     public Vector2 Position { get; set; }
     public float Rotation { get; set; }
