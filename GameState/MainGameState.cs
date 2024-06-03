@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -33,6 +34,7 @@ namespace Circle
         private Player _player;
         private Score _score;
         private LinkedList<Line> _lines = new LinkedList<Line>();
+        private SoundManager _soundManager;
 
         private Random _lineTypeGen = new Random();
         private Random _colorGen = new Random();
@@ -73,7 +75,10 @@ namespace Circle
             _score = new Score(font);
             _score.LoadHighScore();
 
+            _soundManager = new SoundManager();
+            _soundManager.LoadContent(_contentManager);
             OnJump += _player.jump;
+            OnJump += _soundManager.PlayJumpSound;
 
             _previousKeyboardState = Keyboard.GetState();
         }

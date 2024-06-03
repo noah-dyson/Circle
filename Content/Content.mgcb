@@ -49,6 +49,12 @@
 /processorParam:TextureFormat=Color
 /build:front-circle.png
 
+#begin jumpsound.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:jumpsound.wav
+
 #begin Score.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
