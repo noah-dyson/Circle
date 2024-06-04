@@ -47,6 +47,8 @@ namespace Circle
         private CircleState _state = CircleState.Pregame;
         private float _lineSpeed = 0;
 
+        public Vector2 CameraPos = Vector2.Zero;
+
 
         public void Initialize(ContentManager contentManager, int screenHeight, int screenWidth)
         {
@@ -135,7 +137,7 @@ namespace Circle
             }
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        public void DrawObjects(SpriteBatch spriteBatch)
         {
             // draws the game objects
             foreach (Line line in _lines)
@@ -144,6 +146,10 @@ namespace Circle
             }
 
             _player.Render(spriteBatch);
+        }
+
+        public void DrawUI(SpriteBatch spriteBatch)
+        {
             _score.Render(spriteBatch, _screenWidth);
         }
 
@@ -155,6 +161,8 @@ namespace Circle
                 line.UpdatePosition(_lineSpeed);
             }
             _player.UpdatePosition(true, gameTime);
+
+            CameraPos = new Vector2(0, _player.Position.Y - _screenHeight / 2);
         }
 
         private void StartGameUpdate(GameTime gameTime)
