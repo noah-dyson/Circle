@@ -5,7 +5,7 @@ namespace Circle;
 
 public class Game1 : Game
 {
-    private Rectangle _screenRectangle = new Rectangle(0, 0, 3*800, 3*480);
+    private Rectangle _screenRectangle = new Rectangle(0, 0, 1*800, 1*480);
     private GraphicsDeviceManager _graphics;
     private GraphicsDevice _graphicsDevice;
     private SpriteBatch _spriteBatch;
@@ -37,8 +37,8 @@ public class Game1 : Game
         _screenHeight = 480;
         _screenWidth = 800;
         
-        _graphics.PreferredBackBufferHeight = 3*480;
-        _graphics.PreferredBackBufferWidth = 3*800;
+        _graphics.PreferredBackBufferHeight = 1*480;
+        _graphics.PreferredBackBufferWidth = 1*800;
         _graphics.ApplyChanges();
 
         _renderTarget = new RenderTarget2D(_graphicsDevice, _screenWidth, _screenHeight);
@@ -63,13 +63,8 @@ public class Game1 : Game
         GraphicsDevice.SetRenderTarget(_renderTarget);
         GraphicsDevice.Clear(bgColor);
 
-        // create transfrmation matrix
-        Matrix viewMatrix = Matrix.CreateTranslation(0, _mainGameState.CameraPos.Y, 0);
-        _spriteBatch.Begin(SpriteSortMode.FrontToBack, null, null, null, null, null, viewMatrix);
+        _spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.NonPremultiplied);
         _mainGameState.DrawObjects(_spriteBatch);
-        _spriteBatch.End();
-
-        _spriteBatch.Begin();
         _mainGameState.DrawUI(_spriteBatch);
         _spriteBatch.End();
 

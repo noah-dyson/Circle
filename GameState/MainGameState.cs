@@ -46,8 +46,7 @@ namespace Circle
         private KeyboardState _previousKeyboardState;
         private CircleState _state = CircleState.Pregame;
         private float _lineSpeed = 0;
-
-        public Vector2 CameraPos = Vector2.Zero;
+        private List<PlayerGhost> _playerGhosts = new List<PlayerGhost>();
 
 
         public void Initialize(ContentManager contentManager, int screenHeight, int screenWidth)
@@ -105,7 +104,7 @@ namespace Circle
 
                     case CircleState.Ingame:
                         OnJump?.Invoke();
-
+                        _playerGhosts.Add(new PlayerGhost(_player.Position));
                         // changes the color and line speed of the game every 10 points
                         if (_score.Value % 10 == 0)
                         {
@@ -146,6 +145,11 @@ namespace Circle
             }
 
             _player.Render(spriteBatch);
+            
+            foreach (PlayerGhost ghost in _playerGhosts)
+            {
+                ghost.Render(spriteBatch, _player.TextureFront, _player.TextureBack);
+            }
         }
 
         public void DrawUI(SpriteBatch spriteBatch)
@@ -161,8 +165,15 @@ namespace Circle
                 line.UpdatePosition(_lineSpeed);
             }
             _player.UpdatePosition(true, gameTime);
-
-            CameraPos = new Vector2(0, _player.Position.Y - _screenHeight / 2);
+        
+            for (int i = 0; i < _playerGhosts.Count; i++)
+            {
+                _playerGhosts[i].Update(_lineSpeed);
+                if (_playerGhosts[i].Scale < 0.001f)
+                {
+                    _playerGhosts.RemoveAt(i);
+                }
+            }
         }
 
         private void StartGameUpdate(GameTime gameTime)
@@ -217,6 +228,15 @@ namespace Circle
         private void PostGameUpdate(GameTime gameTime)
         {
             _player.Color = Color.Orange;
+
+            for (int i = 0; i < _playerGhosts.Count; i++)
+            {
+                _playerGhosts[i].Update(0);
+                if (_playerGhosts[i].Scale < 0.001f)
+                {
+                    _playerGhosts.RemoveAt(i);
+                }
+            }
         }
 
         // this method is very long and could probably be condensed if my maths was better but alas this is the abomination I have created
